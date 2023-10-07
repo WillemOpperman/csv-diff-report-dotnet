@@ -160,7 +160,7 @@ public class Html : Report
                 var old = "";
                 var newDiff = "";
                 var style = chg is "Add" or "Delete" ? chg.ToLower() : "";
-                var d = diff.Value.Fields[field.ToString()];
+                var d = diff.Value[field.ToString()];
                 if (d is object[] diffList)
                 {
                     old = diffList[0]?.ToString();

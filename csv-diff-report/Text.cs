@@ -40,8 +40,8 @@ public class Text : Report
         {
             foreach (var field in outFields)
             {
-                diff.Value.Fields.TryGetValue(field, out object? d);
-                if (d is List<string> dList)
+                var d = diff.Value[field];
+                if (d is object[] dList)
                 {
                     d = dList.Last();
                 }
