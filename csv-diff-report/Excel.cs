@@ -220,12 +220,4 @@ public class Excel : Report
             throw new Exception($"Unable to replace existing Excel file {path} - is it already open in Excel?");
         }
     }
-
-    // Helper method to convert a string to title case.
-    private string Titleize(string input)
-    {
-        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input);
-    }
-
-    // ... Other code ...
 }

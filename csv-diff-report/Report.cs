@@ -490,4 +490,10 @@ public class Report
             throw new ArgumentException("Left and right must both exist and be of the same type (files or directories)");
         }
     }
+
+    // Helper method to convert a string to title case.
+    internal string Titleize(string input)
+    {
+        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input);
+    }
 }

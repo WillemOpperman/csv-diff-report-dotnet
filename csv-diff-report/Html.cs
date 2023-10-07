@@ -204,29 +204,4 @@ public class Html : Report
         body.Add("</tbody>");
         body.Add("</table>");
     }
-
-    public string Titleize(string text)
-    {
-        return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(text.ToLower());
-    }
-
-    public List<object> OutputFields(CSVDiff fileDiff)
-    {
-        var outFields = new List<object>();
-        foreach (var field in fileDiff.Left.FieldNames)
-        {
-            if (!fileDiff.Options.ContainsKey("ignore_fields"))
-            {
-                outFields.Add(field);
-            }
-        }
-        foreach (var field in fileDiff.Right.FieldNames)
-        {
-            if (!fileDiff.Options.ContainsKey("ignore_fields") && !outFields.Contains(field))
-            {
-                outFields.Add(field);
-            }
-        }
-        return outFields;
-    }
 }

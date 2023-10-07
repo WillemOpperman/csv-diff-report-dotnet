@@ -71,10 +71,4 @@ public class Text : Report
             csv.NextRecord();
         }
     }
-
-    // Helper method to convert a string to title case.
-    private string Titleize(string input)
-    {
-        return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(input);
-    }
 }
