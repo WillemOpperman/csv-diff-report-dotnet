@@ -9,12 +9,12 @@ public class Excel : Report
 {
     private Dictionary<string, object> _xlStyles;
 
-    public Excel(object left, object right, Dictionary<string, object> options = null)
+    public Excel(string left = null, string right = null):  base(left, right)
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
     }
 
-    private void XLOutput(string output)
+    public void XLOutput(string output)
     {
         FileInfo newFile = new FileInfo(output);
         using (ExcelPackage xl = new ExcelPackage(newFile))
@@ -65,7 +65,7 @@ public class Excel : Report
         int row = 5;
         foreach (var fileDiff in Diffs)
         {
-            sheet.Cells[row, 1].Value = fileDiff.Options["sheet_name"] ?? Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
+            sheet.Cells[row, 1].Value = fileDiff.Options.TryGetValue("sheet_name", out object? value) ? value : Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
 
             sheet.Cells[row, 2].Value = fileDiff.Summary["Add"];
             sheet.Cells[row, 3].Value = fileDiff.Summary["Delete"];
@@ -83,9 +83,9 @@ public class Excel : Report
 
     private void XLDiffSheet(ExcelPackage xl, CSVDiff fileDiff)
     {
-        string sheetName = fileDiff.Options["sheet_name"]?.ToString() ?? Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
+        string sheetName = fileDiff.Options.TryGetValue("sheet_name", out object? sheetNameValue) ? sheetNameValue.ToString() : Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
         List<object> outFields = OutputFields(fileDiff).Cast<object>().ToList();
-        int freezeCols = (int?)fileDiff.Options["freeze_cols"] ?? (outFields.FindAll(f => f is string).Count + fileDiff.Left.KeyFields.Count);
+        int freezeCols = (int)(fileDiff.Options.TryGetValue("freeze_cols", out object? freezeColsValue) ? freezeColsValue : outFields.FindAll(f => f is string).Count + fileDiff.Left.KeyFields.Count);
 
         ExcelWorksheet sheet = xl.Workbook.Worksheets.Add(sheetName);
 
