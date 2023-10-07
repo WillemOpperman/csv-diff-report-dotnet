@@ -52,22 +52,6 @@ public class Text : Report
                 }
                 csv.WriteField(d?.ToString() ?? "");
             }
-            // var rows = outFields.Select(field =>
-            // {
-            //     var d = diff.Value.Fields[field];
-            //     if (d is List<string> dList)
-            //     {
-            //         d = dList.Last();
-            //     }
-            //     if (d == null && fileDiff.Options.TryGetValue("include_matched", out object include_matched) && (bool)include_matched)
-            //     {
-            //         throw new Exception("TODO");
-            //         // d = fileDiff.Right[diff.Key] && fileDiff.Right[diff.Key][field];
-            //     }
-            //     return d?.ToString() ?? "";;
-            // });
-            //
-            // csv.WriteRecords(rows);
             csv.NextRecord();
         }
     }
