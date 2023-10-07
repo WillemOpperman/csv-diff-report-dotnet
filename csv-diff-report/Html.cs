@@ -159,9 +159,9 @@ public class Html : Report
                 var field = outFields[i];
                 var old = "";
                 var newDiff = "";
-                var style = "";
+                var style = chg is "Add" or "Delete" ? chg.ToLower() : "";
                 var d = diff.Value.Fields[field.ToString()];
-                if (d is List<object> diffList)
+                if (d is object[] diffList)
                 {
                     old = diffList[0]?.ToString();
                     newDiff = diffList[1]?.ToString();
@@ -188,33 +188,15 @@ public class Html : Report
                     newDiff = ((Source)fileDiff.Right)[diff.Key][(string)field]?.ToString();
                 }
                 body.Add("<td>");
-                // if (style == "update" && lcsAvailable && old != null && newDiff != null &&
-                //     (old.Split('\n').Length > 1 || newDiff.Split('\n').Length > 1))
-                // {
-                //     var lcsDiffs = Diff.LCS.Diff(old.Split('\n'), newDiff.Split('\n'));
-                //     for (var j = 0; j < lcsDiffs.Count; j++)
-                //     {
-                //         if (j > 0) body.Add("<br>...<br>");
-                //         for (var l = 0; l < lcsDiffs[j].Count; l++)
-                //         {
-                //             if (l > 0) body.Add("<br>");
-                //             body.Add($"{lcsDiffs[j][l].Position + 1}&nbsp;&nbsp;<span class='{(lcsDiffs[j][l].Action == '+' ? "add" : "delete")}'>" +
-                //                 $"<code>{System.Web.HttpUtility.HtmlEncode(lcsDiffs[j][l].Element.ToString().TrimEnd('\n'))}</code></span>");
-                //         }
-                //     }
-                // }
-                // else
-                // {
-                    if (old != null)
-                    {
-                        body.Add($"<span class='delete'><code>{System.Web.HttpUtility.HtmlEncode(old)}</code></span>");
-                    }
-                    if (old != null && old.Length > 10)
-                    {
-                        body.Add("<br>");
-                    }
-                    body.Add($"<span{(string.IsNullOrEmpty(style) ? "" : $" class='{style}'")}><code>{System.Web.HttpUtility.HtmlEncode(newDiff)}</code></span>");
-                // }
+                if (old != null)
+                {
+                    body.Add($"<span class='delete'><code>{System.Web.HttpUtility.HtmlEncode(old)}</code></span>");
+                }
+                if (old != null && old.Length > 10)
+                {
+                    body.Add("<br>");
+                }
+                body.Add($"<span{(string.IsNullOrEmpty(style) ? "" : $" class='{style}'")}><code>{System.Web.HttpUtility.HtmlEncode(newDiff)}</code></span>");
                 body.Add("</td>");
             }
             body.Add("</tr>");
