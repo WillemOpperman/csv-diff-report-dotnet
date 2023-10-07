@@ -154,7 +154,7 @@ public class Html : Report
         {
             body.Add("<tr>");
             var chg = (string)diff.Value["action"];
-            for (var i = 0; i < outFields.Count; i++)
+            for (var i = 0; i < outFields.Length; i++)
             {
                 var field = outFields[i];
                 var old = "";
