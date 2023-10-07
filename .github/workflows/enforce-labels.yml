@@ -1,0 +1,12 @@
+name: 'Enforce Labels'
+on:
+  - pull_request
+jobs:
+  enforce-labels:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: yogevbd/enforce-label-action@2.2.2
+      with:
+        # REQUIRED_LABELS_ANY: "bug,enhancement,skip-changelog"
+        # REQUIRED_LABELS_ANY_DESCRIPTION: "Select at least one label ['bug','enhancement','skip-changelog']"
+        BANNED_LABELS: "do-not-merge,wip"

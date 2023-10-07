@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <RootNamespace>csv_diff_report</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <EnablePackageValidation>true</EnablePackageValidation>
+
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+        <!-- If all members are not documented, you can disable the compiler warnings -->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Authors>Willem Opperman</Authors>
+        <Description>This library will produce an HTML|CSV|EXCEL report using the CSVDiff package.</Description>
+
+        <PackageId>CSVDiffReport</PackageId>
+
+        <!-- PackageProjectUrl is different from the repository URL. It can be a documentation
+             website or a website explaining the project -->
+        <PackageProjectUrl>https://github.com/WillemOpperman/csv-diff-report-dotnet</PackageProjectUrl>
+
+        <!-- A list of tags to help the search engine to understand the content of the package -->
+        <PackageTags>csvdiff, csvdiffreport, library, HTML, CSV, EXCEL</PackageTags>
+
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>nuget.png</PackageIcon>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CSVDiff" Version="1.2.2" />
+        <PackageReference Include="CsvHelper" Version="30.0.1" />
+        <PackageReference Include="EPPlus" Version="6.2.7" />
+        <PackageReference Include="YamlDotNet" Version="13.1.1" />
+    </ItemGroup>
+
+</Project>
