@@ -1,0 +1,10 @@
+# project
+*/bin
+*obj
+
+# Rider ignored files
+/.idea
+/csv-diff-report-dotnet.sln.DotSettings.user
+
+# git
+.git

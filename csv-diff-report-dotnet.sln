@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csv-diff-report", "csv-diff-report\csv-diff-report.csproj", "{21F181E4-8796-4EB4-94BB-D001EE021FBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tests", "tests\tests.csproj", "{C59DBDF1-BA09-4B99-8737-7368AD27A43A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{310D9605-C107-4441-BECF-7CE7FB41D483}"
+	ProjectSection(SolutionItems) = preProject
+		.commitlintrc.json = .commitlintrc.json
+        .gitignore = .gitignore
+        LICENSE = LICENSE
+        README.md = README.md
+        nuget.png = nuget.png
+        .releaserc.json = .releaserc.json
+        CHANGELOG.md = CHANGELOG.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{21F181E4-8796-4EB4-94BB-D001EE021FBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21F181E4-8796-4EB4-94BB-D001EE021FBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21F181E4-8796-4EB4-94BB-D001EE021FBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21F181E4-8796-4EB4-94BB-D001EE021FBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C59DBDF1-BA09-4B99-8737-7368AD27A43A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C59DBDF1-BA09-4B99-8737-7368AD27A43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C59DBDF1-BA09-4B99-8737-7368AD27A43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C59DBDF1-BA09-4B99-8737-7368AD27A43A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
