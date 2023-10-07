@@ -31,42 +31,51 @@ public class TestReport
         new[] { "B", "A6", "Account 6" },
         new[] { "C", "A6", "Account 6c" }
     };
-    
-    [Fact]
-    public void TestExcludeFilter()
+
+    private readonly CSVSource _source1;
+    private readonly CSVSource _source2;
+    private readonly CSVDiff _diff;
+
+    public TestReport()
     {
-        CSVSource source1 = new CSVSource(Data1, new Dictionary<string, object>
+        _source1 = new CSVSource(Data1, new Dictionary<string, object>
         {
             { "key_fields", new List<int> { 0, 1 } },
             { "exclude", new Dictionary<string, Regex> { { "Description", new Regex("Account\\d") } } }
         });
 
-        CSVSource source2 = new CSVSource(Data2, new Dictionary<string, object>
+        _source2 = new CSVSource(Data2, new Dictionary<string, object>
         {
             { "key_fields", new List<int> { 0, 1 } },
             { "exclude", new Dictionary<string, Regex> { { "2", new Regex("^ACC") } } }
         });
 
-        var diff = new CSVDiff(source1, source2, new Dictionary<string, object>
+        _diff = new CSVDiff(_source1, _source2, new Dictionary<string, object>
         {
             { "parent_field", 0 },
             { "child_field", 1 }
         });
-
+    }
+    
+    [Fact]
+    public void TestExcludeFilter()
+    {
         var textOutputFilePath = Path.GetTempFileName();
         var textReport = new Text();
-        textReport.Add(diff);
+        textReport.Add(_diff);
         textReport.TextOutput(textOutputFilePath);
         
         var htmlOutputFilePath = Path.GetTempFileName();
         var htmlReport = new Html();
-        htmlReport.Add(diff);
+        htmlReport.Add(_diff);
         htmlReport.HtmlOutput(htmlOutputFilePath);
 
-        
-        
+        var excelOutputFilePath = Path.GetTempFileName();
+        var excelReport = new Excel();
+        excelReport.Add(_diff);
+        excelReport.XLOutput(excelOutputFilePath);
 
-        Assert.Equal(1, source1.SkipCount);
-        Assert.Equal(1, source2.SkipCount);
+        Assert.Equal(1, _source1.SkipCount);
+        Assert.Equal(1, _source2.SkipCount);
     }
 }
