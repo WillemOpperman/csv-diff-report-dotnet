@@ -10,6 +10,7 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_NOLOGO: true
   NuGetDirectory: ${{ github.workspace}}/nuget
+  COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
   
 jobs:
   commitlint:
@@ -29,4 +30,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
       - name: Run tests
-        run: dotnet test --configuration Release      
+        run: dotnet test --configuration Release --collect:"XPlat Code Coverage"
+
+      - name: Publish coverage report to coveralls.io
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: tests/TestResults/**/coverage.cobertura.xml
+          format: cobertura

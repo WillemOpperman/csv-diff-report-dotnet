@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
+using ClosedXML.Excel;
 using csv_diff;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 
 namespace csv_diff_report;
 
@@ -11,208 +10,211 @@ public class Excel : Report
 
     public Excel(string left = null, string right = null):  base(left, right)
     {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
     }
 
     public void XLOutput(string output)
     {
-        FileInfo newFile = new FileInfo(output);
-        using (ExcelPackage xl = new ExcelPackage(newFile))
-        {
-            _xlStyles = new Dictionary<string, object>();
+		// Create a new workbook
+        var workbook = new XLWorkbook();
 
-            // Add a summary sheet and diff sheets for each diff
-            XLSummarySheet(xl);
+        // Add a summary sheet and diff sheets for each diff
+        XLSummarySheet(workbook);
 
-            // Save workbook
-            xl.Save();
-        }
+        // Save the workbook
+        var path = $"{System.IO.Path.GetDirectoryName(output)}/{System.IO.Path.GetFileNameWithoutExtension(output)}.xlsx";
+        XLSave(workbook, path);
     }
 
-    private void XLSummarySheet(ExcelPackage xl)
+    private void XLSummarySheet(XLWorkbook workbook)
     {
-        string compareFrom = Left.ToString();
-        string compareTo = Right.ToString();
+        string compareFrom = Left;
+        string compareTo = Right;
 
-        ExcelWorksheet sheet = xl.Workbook.Worksheets.Add("Summary");
+        var summarySheet = workbook.Worksheets.Add("Summary");
 
-        sheet.Cells[1, 1].Value = "From:";
-        sheet.Cells[1, 1].Style.Font.Bold = true;
-        sheet.Cells[1, 2].Value = compareFrom;
+        // Add headers
+        summarySheet.Cell("A1").Value = "From:";
+        summarySheet.Cell("A1").Style.Font.SetBold();
+        summarySheet.Cell("B1").Value = compareFrom;
 
-        sheet.Cells[2, 1].Value = "To:";
-        sheet.Cells[2, 1].Style.Font.Bold = true;
-        sheet.Cells[2, 2].Value = compareTo;
+        summarySheet.Cell("A2").Value = "To:";
+        summarySheet.Cell("A2").Style.Font.SetBold();
+        summarySheet.Cell("B2").Value = compareTo;
 
-        sheet.Cells[3, 1].Value = string.Empty;
+        summarySheet.Cell("A3").Value = string.Empty; // Spacer row
 
-        sheet.Cells[4, 1].Value = "Sheet";
-        sheet.Cells[4, 2].Value = "Adds";
-        sheet.Cells[4, 3].Value = "Deletes";
-        sheet.Cells[4, 4].Value = "Updates";
-        sheet.Cells[4, 5].Value = "Moves";
+        summarySheet.Cell("A4").Value = "Sheet";
+        summarySheet.Cell("B4").Value = "Adds";
+        summarySheet.Cell("C4").Value = "Deletes";
+        summarySheet.Cell("D4").Value = "Updates";
+        summarySheet.Cell("E4").Value = "Moves";
 
-        // foreach (var ci in sheet.Column(1, 5))
-        foreach (var ci in sheet.Columns[0, 4])
-        {
-            ci.Style.Font.Bold = true;
-            ci.Style.WrapText = true;
-            ci.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            ci.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-            ci.Style.Font.Size = 9;
-        }
+        // Set column widths
+        summarySheet.Column("A").Width = 20;
+        summarySheet.Columns("B:E").Width = 10;
 
-        int row = 5;
+        var row = 5;
+
         foreach (var fileDiff in Diffs)
         {
-            sheet.Cells[row, 1].Value = fileDiff.Options.TryGetValue("sheet_name", out object? value) ? value : Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
+            var sheetName = fileDiff.Options.TryGetValue("sheet_name", out var value)
+                ? value.ToString()
+                : System.IO.Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
 
-            sheet.Cells[row, 2].Value = fileDiff.Summary["Add"];
-            sheet.Cells[row, 3].Value = fileDiff.Summary["Delete"];
-            sheet.Cells[row, 4].Value = fileDiff.Summary["Update"];
-            sheet.Cells[row, 5].Value = fileDiff.Summary["Move"];
+            var adds = fileDiff.Summary["Add"];
+            var deletes = fileDiff.Summary["Delete"];
+            var updates = fileDiff.Summary["Update"];
+            var moves = fileDiff.Summary["Move"];
+
+            summarySheet.Cell($"A{row}").Value = sheetName;
+            summarySheet.Cell($"B{row}").Value = adds;
+            summarySheet.Cell($"C{row}").Value = deletes;
+            summarySheet.Cell($"D{row}").Value = updates;
+            summarySheet.Cell($"E{row}").Value = moves;
 
             if (fileDiff.Diffs.Count > 0)
             {
-                XLDiffSheet(xl, fileDiff);
+                XLDiffSheet(workbook, fileDiff);
             }
 
             row++;
         }
     }
 
-    private void XLDiffSheet(ExcelPackage xl, CSVDiff fileDiff)
+    private void XLDiffSheet(XLWorkbook workbook, CSVDiff fileDiff)
     {
-        string sheetName = fileDiff.Options.TryGetValue("sheet_name", out object? sheetNameValue) ? sheetNameValue.ToString() : Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
-        List<object> outFields = OutputFields(fileDiff).Cast<object>().ToList();
-        int freezeCols = (int)(fileDiff.Options.TryGetValue("freeze_cols", out object? freezeColsValue) ? freezeColsValue : outFields.FindAll(f => f is string).Count + fileDiff.Left.KeyFields.Count);
+        var sheetName = fileDiff.Options.TryGetValue("sheet_name", out var sheetNameValue)
+        ? sheetNameValue.ToString()
+        : System.IO.Path.GetFileNameWithoutExtension(fileDiff.Left.Path);
 
-        ExcelWorksheet sheet = xl.Workbook.Worksheets.Add(sheetName);
+		var outFields = OutputFields(fileDiff);
+		var freezeCols = fileDiff.Options.TryGetValue("freeze_cols", out var freezeColsValue)
+			? Convert.ToInt32(freezeColsValue)
+			: (outFields.Count(f => f is string) + fileDiff.Left.KeyFields.Count);
 
-        int columnIndex = 1;
-        foreach (var field in outFields)
-        {
-            ExcelRange cell = sheet.Cells[1, columnIndex];
-            cell.Value = field is string ? Titleize((string)field) : field.ToString();
-            cell.Style.Font.Bold = true;
-            columnIndex++;
-        }
+		var diffSheet = workbook.Worksheets.Add(sheetName);
 
-        int rowIndex = 2;
-        foreach (var diff in fileDiff.Diffs)
-        {
-            ExcelRange row = sheet.Cells[rowIndex, 1, rowIndex, outFields.Count];
-            string chg = (string)diff.Value["action"];
-            foreach (var cell in row)
-            {
-                object cellValue = null;
-                string comment = null;
-                string old = null;
-                ExcelStyle style = null;
-                throw new Exception("TODO");
-                object d = null;
-                // object d = diff.Value[cell.Start.Column - 1];
-                int index = cell.Start.Column - 1;
+		// Add column headers
+		for (int i = 1; i <= outFields.Length; i++)
+		{
+			var header = outFields[i - 1] is string ? outFields[i - 1].ToString() : Titleize(outFields[i - 1].ToString());
+			diffSheet.Cell(1, i).Value = header;
+			diffSheet.Cell(1, i).Style.Font.SetBold();
+		}
 
-                if (d is string[])
-                {
-                    string[] diffArray = (string[])d;
-                    old = diffArray[0];
-                    string newDiffValue = diffArray[1];
-                    if (old == null)
-                    {
-                        style = _xlStyles["Add"] as ExcelStyle;
-                    }
-                    else
-                    {
-                        style = _xlStyles[chg] as ExcelStyle;
-                        comment = old;
-                    }
-                    cellValue = newDiffValue;
-                }
-                else
-                {
-                    cellValue = d;
-                    if ((bool)fileDiff.Options["include_matched"])
-                    {
-                        style = _xlStyles["Matched"] as ExcelStyle;
-                        throw new Exception("TODO");
-                        // d = fileDiff.Right[diff.Key][index];
-                    }
-                    else
-                    {
-                        switch (chg)
-                        {
-                            case "Add":
-                            case "Delete":
-                                style = _xlStyles[chg] as ExcelStyle;
-                                break;
-                            default:
-                                throw new Exception("TODO");
-                                // style = new ExcelStyle();
-                                break;
-                        }
-                    }
-                }
+		int row = 2; // Start from the second row for data
 
-                switch (cellValue)
-                {
-                    case string strValue:
-                        if (Regex.IsMatch(strValue, "^0+\\d+(\\.\\d+)?"))
-                        {
-                            // Don't let Excel auto-convert this to a number, as that
-                            // will remove the leading zero(s)
-                            cell.Value = strValue;
-                        }
-                        else
-                        {
-                            cell.Value = strValue;
-                        }
-                        break;
-                    default:
-                        cell.Value = cellValue;
-                        break;
-                }
+		foreach (var keyDiff in fileDiff.Diffs)
+		{
+			var key = keyDiff.Key;
+			var diff = keyDiff.Value;
+			var chg = diff["action"].ToString();
 
-                if (style != null)
-                {
-                    throw new Exception("TODO");
-                    // cell.Style.Font.Color.SetColor(style.Font.Color.Rgb);
-                    cell.Style.Fill.PatternType = style.Fill.PatternType;
-                    // cell.Style.Fill.BackgroundColor.SetColor(style.Fill.BackgroundColor.Rgb);
-                    cell.Style.Font.Strike = style.Font.Strike;
-                }
+			int col = 1;
 
-                if (comment != null)
-                {
-                    ExcelComment xlComment = sheet.Comments.Add(cell.Current, comment, "Current");
-                    xlComment.Visible = false;
-                }
+			foreach (var field in outFields)
+			{
+				// Determine cell value based on field and diff data
+				var newValue = ""; // Set the appropriate value here
+				var oldValue = ""; // Set the appropriate value here
 
-                columnIndex++;
-            }
-            rowIndex++;
-        }
+				// Determine background color based on change action
+				var fgColor = XLColor.Black; // Default color
+				var bgColor = XLColor.White; // Default color
+				var strike = false;
+				if (chg == "Add")
+				{
+					fgColor = XLColor.FromHtml("#00A000"); // Green
+				}
+				else if (chg == "Delete")
+				{
+					fgColor = XLColor.FromHtml("#FF0000"); // Red
+					strike = true;
+				}
+				else if (chg == "Update")
+				{
+					fgColor = XLColor.FromHtml("#0000A0"); // Blue
+					bgColor = XLColor.FromHtml("#F0F0FF"); // Blue
+				}
+				else if (chg == "Move")
+				{
+					fgColor = XLColor.FromHtml("#4040FF"); // Purple
+				}
 
-        foreach (var ci in sheet.Columns[1, outFields.Count])
-        {
-            ci.AutoFit(80);
-        }
+				// Determine if you need to add a comment
+				string comment = null;
+				var diffValue = diff[field];
+				if (diffValue is object[])
+				{
+					var diffList = diffValue as object[];
+					oldValue = diffList[0].ToString();
+					newValue = diffList[1].ToString();
 
-        XLFilterAndFreeze(sheet, freezeCols);
+					if (string.IsNullOrEmpty(oldValue))
+					{
+						fgColor = XLColor.FromHtml("#00A000"); // Green
+					}
+					else
+					{
+						comment = oldValue;
+					}
+					
+				}
+				else if (diffValue is not null)
+				{
+					newValue = diffValue.ToString();
+				}
+				else if (fileDiff.Options.ContainsKey("include_matched") && (bool)fileDiff.Options["include_matched"])
+				{
+					newValue = fileDiff.Diffs[key][field].ToString();
+				}
+
+				var cell = diffSheet.Cell(row, col);
+				cell.Value = newValue;
+				cell.Style.Font.FontColor = fgColor;
+				cell.Style.Font.Strikethrough = strike;
+				cell.Style.Fill.BackgroundColor = bgColor;
+				// cell.DataType = XLDataType.Text;
+
+				// Add comment if present
+				if (!string.IsNullOrEmpty(comment))
+				{
+					var commentCell = cell.CreateComment();
+					commentCell.Visible = false;
+					commentCell.AddText(comment);
+				}
+
+				col++;
+			}
+
+			row++;
+		}
+
+		// Apply auto-filter and freeze rows/columns
+		XLFilterAndFreeze(diffSheet, freezeCols);
+		
+		// Auto-size columns
+		diffSheet.Columns().AdjustToContents();
     }
 
-    private void XLFilterAndFreeze(ExcelWorksheet sheet, int freezeCols = 0)
+    private void XLFilterAndFreeze(IXLWorksheet sheet, int freezeCols = 0)
     {
-        sheet.Cells[sheet.Dimension.Address].AutoFilter = true;
-        sheet.View.FreezePanes(2, freezeCols + 1);
+        // Implement auto-filter and freeze logic here
+		// Add auto-filter to the appropriate row/column
+		sheet.RangeUsed().SetAutoFilter();
+
+		// Freeze rows and columns based on the freezeCols parameter
+		if (freezeCols > 0)
+		{
+			sheet.SheetView.Freeze(freezeCols, 1);
+		}
     }
 
-    private void XLSave(ExcelPackage xl, string path)
+    private void XLSave(XLWorkbook workbook, string path)
     {
         try
         {
-            xl.Save();
+            workbook.SaveAs(path);
         }
         catch (Exception ex)
         {

@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using csv_diff;
 using CsvHelper;
 using CsvHelper.Configuration;
-using OfficeOpenXml;
 
 namespace csv_diff_report;
 

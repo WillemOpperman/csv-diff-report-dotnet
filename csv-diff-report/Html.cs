@@ -185,7 +185,7 @@ public class Html : Report
                 else if (fileDiff.Options.TryGetValue("include_matched", out object include_matched) && (bool)include_matched)
                 {
                     style = "matched";
-                    newDiff = ((Source)fileDiff.Right)[diff.Key][(string)field]?.ToString();
+                    newDiff = fileDiff.Diffs[diff.Key][field]?.ToString();
                 }
                 body.Add("<td>");
                 if (old != null)
