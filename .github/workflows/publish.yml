@@ -62,20 +62,3 @@ jobs:
           foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
               dotnet nuget push $file --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
           }
-
-  publish_coverge:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-
-      - name: Run tests
-        run: dotnet test --configuration Release --collect:"XPlat Code Coverage"
-
-      - name: Publish coverage report to coveralls.io
-        uses: coverallsapp/github-action@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: tests/TestResults/**/coverage.cobertura.xml
-          format: cobertura
