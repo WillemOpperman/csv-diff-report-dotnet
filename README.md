@@ -3,6 +3,7 @@
 [![Sponsors on Open Collective](https://opencollective.com/csvdiff/sponsors/badge.svg)](#sponsors)
 <a href="https://www.nuget.org/packages/CSVDiffReport"><img src="https://img.shields.io/nuget/v/CSVDiffReport.svg" alt="NuGet Version" /></a>
 <a href="https://www.nuget.org/packages/CSVDiffReport"><img src="https://img.shields.io/nuget/dt/CSVDiffReport.svg" alt="NuGet Download Count" /></a>
+[![Coverage Status](https://coveralls.io/repos/github/WillemOpperman/csv-diff-report-dotnet/badge.svg?branch=main)](https://coveralls.io/github/WillemOpperman/csv-diff-report-dotnet?branch=main)
 
 A library for producing HTML|CSV|EXCEL reports using <a href="https://github.com/WillemOpperman/csv-diff-dotnet">CSVDiff</a>.
 
