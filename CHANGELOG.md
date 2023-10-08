@@ -1,3 +1,11 @@
+## [1.0.3](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.2...v1.0.3) (2023-10-08)
+
+
+### Bug Fixes
+
+* excel reporting ([ea8149b](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/ea8149b640f784d9931c485e89411e804ab9367e))
+* include_matched logic ([615bd70](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/615bd70fec0b67479426e9858f62a5d36e45e2db))
+
 ## [1.0.2](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.1...v1.0.2) (2023-10-07)
 
 
