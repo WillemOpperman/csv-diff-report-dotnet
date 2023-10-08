@@ -45,10 +45,9 @@ public class Text : Report
                 {
                     d = dList.Last();
                 }
-                if (d == null && fileDiff.Options.TryGetValue("include_matched", out object include_matched) && (bool)include_matched)
+                if (d is null && fileDiff.Options.TryGetValue("include_matched", out object include_matched) && (bool)include_matched)
                 {
-                    throw new Exception("TODO");
-                    // d = fileDiff.Right[diff.Key] && fileDiff.Right[diff.Key][field];
+                    d = fileDiff.Diffs[diff.Key][field].ToString();
                 }
                 csv.WriteField(d?.ToString() ?? "");
             }

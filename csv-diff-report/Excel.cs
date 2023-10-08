@@ -164,9 +164,9 @@ public class Excel : Report
 				{
 					newValue = diffValue.ToString();
 				}
-				else if (false)
+				else if (fileDiff.Options.ContainsKey("include_matched") && (bool)fileDiff.Options["include_matched"])
 				{
-					// TODO: include_matched logic
+					newValue = fileDiff.Diffs[key][field].ToString();
 				}
 
 				var cell = diffSheet.Cell(row, col);
