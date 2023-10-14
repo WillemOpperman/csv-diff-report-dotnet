@@ -174,7 +174,7 @@ public class Html : Report
                         style = chg.ToLower();
                     }
                 }
-                else if (d != null)
+                else if (d is not null)
                 {
                     newDiff = d.ToString();
                     if (i == 1)
