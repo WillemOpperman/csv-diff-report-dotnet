@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.3...v1.0.4) (2023-10-14)
+
+
+### Bug Fixes
+
+* use expression syntax ([dd2774a](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/dd2774a4226b630f3501c8574a75aca91cc184f7))
+
 ## [1.0.3](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.2...v1.0.3) (2023-10-08)
 
 
