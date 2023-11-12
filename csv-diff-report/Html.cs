@@ -177,7 +177,7 @@ namespace csv_diff_report
                             style = chg.ToLower();
                         }
                     }
-                    else if (ReferenceEquals(d, null))
+                    else if (!ReferenceEquals(d, null))
                     {
                         newDiff = d.ToString();
                         if (i == 1)
