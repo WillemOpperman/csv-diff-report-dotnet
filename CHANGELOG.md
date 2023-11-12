@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.1.0...v1.1.1) (2023-11-12)
+
+
+### Bug Fixes
+
+* change `is`, `is not` & `==` to use `ReferenceEquals` ([e958e8e](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/e958e8e3992a5b4fb1343b6f02e798e28e90fd98))
+* should be a `!` check ([621667f](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/621667f9ba4ce7fe382388d2017e75bdf78e43bd))
+
 # [1.1.0](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.4...v1.1.0) (2023-11-12)
 
 
