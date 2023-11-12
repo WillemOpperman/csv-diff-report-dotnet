@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net6.0;netstandard2.0;netstandard2.1;net472;net48</TargetFrameworks>
         <RootNamespace>csv_diff_report</RootNamespace>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <Nullable>disable</Nullable>
 
         <EnablePackageValidation>true</EnablePackageValidation>
 
@@ -34,7 +34,7 @@
 
     <ItemGroup>
         <PackageReference Include="ClosedXML" Version="0.102.1" />
-        <PackageReference Include="CSVDiff" Version="1.2.6" />
+        <PackageReference Include="CSVDiff" Version="1.3.0" />
         <PackageReference Include="CsvHelper" Version="30.0.1" />
         <PackageReference Include="YamlDotNet" Version="13.1.1" />
     </ItemGroup>
@@ -43,6 +43,10 @@
         <None Include="..\LICENSE" Pack="true" PackagePath=""/>
         <None Include="..\README.md" Pack="true" PackagePath=""/>
         <None Include="..\nuget.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="System.Net" Condition="'$(TargetFramework)' == 'net48' OR '$(TargetFramework)' == 'net472'" />
     </ItemGroup>
 
 </Project>
