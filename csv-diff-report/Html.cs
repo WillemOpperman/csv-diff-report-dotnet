@@ -168,7 +168,7 @@ namespace csv_diff_report
                     {
                         old = diffList[0]?.ToString();
                         newDiff = diffList[1]?.ToString();
-                        if (old == null)
+                        if (ReferenceEquals(old, null))
                         {
                             style = "add";
                         }
@@ -177,7 +177,7 @@ namespace csv_diff_report
                             style = chg.ToLower();
                         }
                     }
-                    else if (ReferenceEquals(d, null))
+                    else if (!ReferenceEquals(d, null))
                     {
                         newDiff = d.ToString();
                         if (i == 1)

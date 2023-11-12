@@ -47,7 +47,7 @@ namespace csv_diff_report
                     {
                         d = dList.Last();
                     }
-                    if (d is null && fileDiff.Options.TryGetValue("include_matched", out object include_matched) && (bool)include_matched)
+                    if (ReferenceEquals(d, null) && fileDiff.Options.TryGetValue("include_matched", out object include_matched) && (bool)include_matched)
                     {
                         d = fileDiff.Diffs[diff.Key][field].ToString();
                     }

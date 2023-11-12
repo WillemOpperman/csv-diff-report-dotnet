@@ -66,11 +66,11 @@ namespace csv_diff_report
 
         public void Add(CSVDiff diff)
         {
-            if (diff == null)
+            if (ReferenceEquals(diff, null))
                 throw new ArgumentNullException(nameof(diff));
 
             diffs.Add(diff);
-            if (Left == null || diff.Left.Path == null)
+            if (ReferenceEquals(Left, null) || ReferenceEquals(diff.Left.Path, null))
             {
                 Left = diff.Left.Path;
                 Right = diff.Right.Path;
