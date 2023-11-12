@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.4...v1.1.0) (2023-11-12)
+
+
+### Features
+
+* allow targeting `net48` ([bedbbe5](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/bedbbe5c6f445483d042fc32cf74ba85ef9e341d))
+
 ## [1.0.4](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.0.3...v1.0.4) (2023-10-14)
 
 
