@@ -49,7 +49,7 @@ jobs:
       
       # Install the .NET SDK indicated in the global.json file
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
       
       # Create the NuGet package in the folder from the environment variable NuGetDirectory
       - run: dotnet pack --configuration Release --output ${{ env.NuGetDirectory }} /p:Version=${{ steps.release.outputs.release-version }}
