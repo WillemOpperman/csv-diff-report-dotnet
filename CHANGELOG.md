@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.1.1...v1.1.2) (2024-04-15)
+
+
+### Bug Fixes
+
+* update to use need speedup version ([2c9306e](https://github.com/WillemOpperman/csv-diff-report-dotnet/commit/2c9306efc36b6fafb7672ed87b0427da6efce698))
+
 ## [1.1.1](https://github.com/WillemOpperman/csv-diff-report-dotnet/compare/v1.1.0...v1.1.1) (2023-11-12)
 
 
